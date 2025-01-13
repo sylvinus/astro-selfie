@@ -10,6 +10,7 @@ import type {AstroGlobal, AstroIntegration} from 'astro';
 
 export default function selfie(): AstroIntegration {
 	let publicDir: URL;
+	let outDir: URL;
 
 	return {
 		name: 'astro-selfie',
@@ -17,10 +18,11 @@ export default function selfie(): AstroIntegration {
 			// eslint-disable-next-line @typescript-eslint/naming-convention, object-shorthand
 			'astro:config:done': ({config}) => {
 				publicDir = (config as unknown as {publicDir: URL}).publicDir;
+				outDir = (config as unknown as {outDir: URL}).outDir;
 			},
 			// eslint-disable-next-line @typescript-eslint/naming-convention, object-shorthand
 			'astro:build:done': async ({dir, pages}) => {
-				const screenshotsDir = new URL('og', publicDir);
+				const screenshotsDir = new URL('og', outDir);
 				await fs.mkdir(fileURLToPath(screenshotsDir), {recursive: true});
 
 				const port = await getPort();
@@ -60,7 +62,7 @@ export default function selfie(): AstroIntegration {
 
 					const screenshotPath = path.join(
 						fileURLToPath(screenshotsDir),
-						pathname === '' ? 'index.png' : `${pathname}.png`,
+						pathname === '' ? 'index.png' : `${stripTrailingSlash(pathname)}.png`,
 					);
 
 					await fs.mkdir(path.dirname(screenshotPath), {recursive: true});
