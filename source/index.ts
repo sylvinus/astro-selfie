@@ -54,9 +54,9 @@ export default function selfie(): AstroIntegration {
 					const page = await context.newPage();
 					await page.goto(url.href);
 
-					// Don't generate screenshot if there's an existing image
-					const existingImage = await page.evaluate('!!document.querySelector(\'meta[property="og:image"]\')?.content');
-					if (existingImage) continue;
+					// Generate screenshot only if its URL starts with /og/
+					const needsGenerating = await page.evaluate('document.querySelector(\'meta[property="og:image"]\')?new URL(document.querySelector(\'meta[property="og:image"]\').content).pathname.startsWith("/og/"):false;');
+					if (!needsGenerating) continue;
 
 					await page.evaluate('document.body.dataset.astroSelfie = true;');
 
