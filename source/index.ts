@@ -9,7 +9,6 @@ import {chromium} from 'playwright';
 import type {AstroGlobal, AstroIntegration} from 'astro';
 
 export default function selfie(): AstroIntegration {
-	let publicDir: URL;
 	let outDir: URL;
 
 	return {
@@ -17,7 +16,6 @@ export default function selfie(): AstroIntegration {
 		hooks: {
 			// eslint-disable-next-line @typescript-eslint/naming-convention, object-shorthand
 			'astro:config:done': ({config}) => {
-				publicDir = (config as unknown as {publicDir: URL}).publicDir;
 				outDir = (config as unknown as {outDir: URL}).outDir;
 			},
 			// eslint-disable-next-line @typescript-eslint/naming-convention, object-shorthand
